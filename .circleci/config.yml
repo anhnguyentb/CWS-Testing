@@ -15,7 +15,7 @@ jobs:
           cd ~/srv/projects/ext
           rm -Rf .circleci
           cd ~/srv/projects
-          zip -r Build_${CIRCLE_BUILD_NUM}.zip ~/srv/projects/etx
+          zip -r Build_${CIRCLE_BUILD_NUM}.zip ~/srv/projects/ext
     - run:
         name: Prepare docker volumne
         command: |
