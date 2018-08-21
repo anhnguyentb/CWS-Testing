@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-    - image: jessie-browsers
+    - image: circleci/node:jessie-browsers
     working_directory: ~/srv/projects
 
     steps:
