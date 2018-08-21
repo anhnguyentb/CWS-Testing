@@ -1,0 +1,27 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/srv/projects
+
+    steps:
+    - checkout:
+        path: ~/srv/projects/ext
+    - setup_remote_docker
+    - run:
+        name: Compress ZIP file
+        command: |
+          cd ~/srv/projects/ext
+          rm .circleci
+          cd ~/srv/projects
+          zip -r Build_${CIRCLE_BUILD_NUM}.zip ~/srv/projects
+    - run:
+        name: Prepare docker volumne
+        command: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker create -v /srv/projects/build --name dummy-volume alpine:3.8 /bin/bash
+          docker cp /home/circleci/srv/projects/Build_${CIRCLE_BUILD_NUM}.zip dummy-volume:/srv/projects/build
+    - run:
+        name: Upload to CWS
+        command: |
+          docker run -e EXTENSION_ID=${EXTENSION_ID} -e GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID} -e GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET} -e GOOGLE_REFRESH_TOKEN=${GOOGLE_REFRESH_TOKEN} \
+                       --rm --workdir /srv/projects --volumes-from dummy-volume:z piggyllc/chrome-builds upload --zipPath /srv/projects/build/Build_${CIRCLE_BUILD_NUM}.zip
