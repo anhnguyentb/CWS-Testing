@@ -13,7 +13,7 @@ jobs:
         name: Compress ZIP file
         command: |
           cd ~/srv/projects/ext
-          rm .circleci
+          rm -Rf .circleci
           cd ~/srv/projects
           zip -r Build_${CIRCLE_BUILD_NUM}.zip ~/srv/projects
     - run:
